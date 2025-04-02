@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 
@@ -37,17 +36,15 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	result := a.TestSupabaseConnection()
-	log.Println(result)
 }
 
 // Greet returns a greeting for the given name
 
-func (a *App) TestSupabaseConnection() string {
+func (a *App) GetStock() ([]map[string]interface{}, error) {
 	var results []map[string]interface{}
-	err := a.supabase.DB.From("test").Select("*").Execute(&results)
+	err := a.supabase.DB.From("test").Select("*").Execute(&results) // สมมติว่าตารางชื่อ "stock"
 	if err != nil {
-		return fmt.Sprintf("Connection failed: %v", err)
+		return nil, err
 	}
-	return fmt.Sprintf("Connection successful! Data: %v", results)
+	return results, nil
 }
