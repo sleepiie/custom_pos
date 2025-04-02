@@ -10,9 +10,9 @@ import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { HashRouter, Routes, Route, NavLink } from 'react-router-dom';
 
-
-import Buy from './pages/Buy';
+import Stock from './pages/Stock';
 import Sell from './pages/Sell';
+import Analysis from './pages/Analysis';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -39,49 +39,93 @@ const App: React.FC = () => {
   } = theme.useToken();
 
   const items: MenuItem[] = [
-    getItem(<NavLink to="/option1">Option 1</NavLink>, '1', <PieChartOutlined />),
-    getItem(<NavLink to="/option2">Option 2</NavLink>, '2', <DesktopOutlined />),
-    getItem('User', 'sub1', <UserOutlined />, [
-      getItem(<NavLink to="/user/tom">Tom</NavLink>, '3'),
-      getItem(<NavLink to="/user/bill">Bill</NavLink>, '4'),
-      getItem(<NavLink to="/user/alex">Alex</NavLink>, '5'),
+    getItem(<NavLink to="/sell">ขาย</NavLink>, '1', <PieChartOutlined />),
+    getItem(<NavLink to="/buy">ซื้อ</NavLink>, '2', <DesktopOutlined />),
+    getItem('การรับฝาก', 'sub1', <UserOutlined />, [
+      getItem(<NavLink to="/get">รับฝาก</NavLink>, '3'),
+      getItem(<NavLink to="/take">นำเครื่องออก</NavLink>, '4'),
     ]),
-    getItem('Team', 'sub2', <TeamOutlined />, [
-      getItem(<NavLink to="/team/1">Team 1</NavLink>, '6'),
-      getItem(<NavLink to="/team/2">Team 2</NavLink>, '8'),
-    ]),
-    getItem(<NavLink to="/files">Files</NavLink>, '9', <FileOutlined />),
+    getItem('จัดการสินค้า', 'sub2', <UserOutlined />, [
+        getItem(<NavLink to="/stock">สินค้า</NavLink>, '5'),
+        getItem(<NavLink to="/category">หมวดหมู่</NavLink>, '6'),
+      ]),
+    getItem(<NavLink to="/analysis">จัดการหลังบ้าน</NavLink>, '7', <FileOutlined />),
   ];
 
   return (
     <HashRouter>
-      <Layout style={{ minHeight: '100vh' }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-          <div className="demo-logo-vertical" />
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
-        </Sider>
-        <Layout>
-          <Content style={{ margin: '16px 16px' }}>
-            <div
-              style={{
-                padding: 24,
-                minHeight: 360,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
-              }}
-            >
-              <Routes>
-                <Route path="/option1" element={<Buy />} />
-                <Route path="/option2" element={<Sell />} />
-                <Route path="/" element={<div>Home Page</div>} />
-              </Routes>
-            </div>
-          </Content>
-          <Footer style={{ textAlign: 'center' }}>
-            Ant Design ©{new Date().getFullYear()} Created by Ant UED
-          </Footer>
+        <Layout style={{ minHeight: '100vh' }}>
+            <Header style={{ 
+                position: 'fixed',
+                zIndex: 1,
+                width: '100%',
+                height: 50,
+                display: 'flex', 
+                alignItems: 'center' ,
+                justifyContent: 'space-between',
+                padding: '0 24px', 
+
+            }}>
+                <div style={{ 
+                    color: 'white', 
+                    fontSize: '20px', 
+                    fontWeight: 'bold' 
+                }}>
+                    POS
+                </div>
+                <div>
+                    <UserOutlined style={{ 
+                    color: 'white', 
+                    fontSize: '20px',
+                    cursor: 'pointer' 
+                    }} />
+                </div>
+            </Header>
+            <Layout>
+                <Sider 
+                    collapsible 
+                    collapsed={collapsed} 
+                    onCollapse={(value) => setCollapsed(value)}
+                    style={{
+                    marginTop: 50,
+                    height:'100%',
+                    position: 'fixed',
+                    left: 0,
+                    }}
+                >
+                    <div className="demo-logo-vertical" />
+                    <Menu 
+                        theme="dark" 
+                        defaultSelectedKeys={['1']} 
+                        mode="inline" 
+                        items={items} 
+                    />
+                </Sider>
+                <Layout style={{ 
+                    marginLeft: collapsed ? 80 : 200,
+                    marginTop: 50,
+                    transition: 'all 0.2s'
+                }}>
+                    <Content style={{ margin: '10px 10px' }}>
+                        <div
+                            style={{
+                            padding: 24,
+                            minHeight: '100%',
+                            background: colorBgContainer,
+                            borderRadius: borderRadiusLG,
+                            }}
+                        >
+                            <Routes>
+                            <Route path="/sell" element={<Sell />} />
+                            <Route path="/stock" element={<Stock />} />
+                            <Route path="/analysis" element={<Analysis />} />
+                            <Route path="/" element={<Sell/>} />
+                            </Routes>
+                        </div>
+                    </Content>
+                </Layout>
+            </Layout>
         </Layout>
-      </Layout>
     </HashRouter>
   );
 };
