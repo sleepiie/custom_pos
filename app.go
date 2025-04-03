@@ -6,13 +6,14 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	supa "github.com/nedpals/supabase-go"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 // App struct
 type App struct {
-	ctx      context.Context
-	supabase *supa.Client
+	ctx context.Context
+	db  *gorm.DB
 }
 
 // NewApp creates a new App application struct
@@ -21,14 +22,16 @@ func NewApp() *App {
 	if err != nil {
 		log.Fatal("Error loading .env file: ", err)
 	}
-	supabaseUrl := os.Getenv("SUPABASE_URL")
-	supabaseKey := os.Getenv("SUPABASE_KEY")
-	if supabaseUrl == "" || supabaseKey == "" {
-		log.Fatal("SUPABASE_URL or SUPABASE_KEY is not set in .env file")
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		log.Fatal("DATABASE_URL is not set in .env file")
 	}
-	supabase := supa.CreateClient(supabaseUrl, supabaseKey)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal("Failed to connect to database: ", err)
+	}
 	return &App{
-		supabase: supabase,
+		db: db,
 	}
 }
 
@@ -38,13 +41,12 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
-
 func (a *App) GetStock() ([]map[string]interface{}, error) {
 	var results []map[string]interface{}
-	err := a.supabase.DB.From("test").Select("*").Execute(&results) // สมมติว่าตารางชื่อ "stock"
+	err := a.db.Table("test").Find(&results).Error
 	if err != nil {
 		return nil, err
 	}
+
 	return results, nil
 }
