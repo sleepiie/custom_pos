@@ -13,9 +13,12 @@ import { HashRouter, Routes, Route, NavLink } from 'react-router-dom';
 import Stock from './pages/Stock';
 import Sell from './pages/Sell';
 import Analysis from './pages/Analysis';
+import LoginPage from './pages/Login';
+
+
+import {ResizeWindow} from '../wailsjs/go/main/App'
 
 const { Header, Content, Footer, Sider } = Layout;
-
 type MenuItem = Required<MenuProps>['items'][number];
 
 function getItem(
@@ -37,6 +40,7 @@ const App: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const items: MenuItem[] = [
     getItem(<NavLink to="/sell">ขาย</NavLink>, '1', <PieChartOutlined />),
@@ -51,6 +55,15 @@ const App: React.FC = () => {
       ]),
     getItem(<NavLink to="/analysis">จัดการหลังบ้าน</NavLink>, '7', <FileOutlined />),
   ];
+
+  const handleLogin = () => {
+    setLoggedIn(true);
+    ResizeWindow(1024, 768); // ขยายหน้าต่างหลัง login
+  };
+
+  if (!loggedIn) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
 
   return (
     <HashRouter>

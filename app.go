@@ -5,15 +5,21 @@ import (
 	"log"
 	"os"
 
+	"custom_pos/models"
+
 	"github.com/joho/godotenv"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 // App struct
 type App struct {
-	ctx context.Context
-	db  *gorm.DB
+	ctx         context.Context
+	db          *gorm.DB
+	loggedIn    bool
+	currentUser *models.User
 }
 
 // NewApp creates a new App application struct
@@ -30,6 +36,12 @@ func NewApp() *App {
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
 	}
+	err = db.AutoMigrate(&models.User{}, &models.Stock{}, &models.Deposite_Device{}, &models.Depositor{}, &models.Buy{}, &models.Sell{})
+	if err != nil {
+		log.Fatal("Failed to migrate database: ", err)
+	}
+	log.Println("Database migrated successfully!")
+
 	return &App{
 		db: db,
 	}
@@ -39,6 +51,53 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+}
+
+func (a *App) ResizeWindow(width, height int) {
+	runtime.WindowSetSize(a.ctx, width, height)
+}
+
+func (a *App) Login(username, password string) (string, error) {
+	var user models.User
+	if err := a.db.Where("username = ?", username).First(&user).Error; err != nil {
+		return "", err
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		log.Println("Invalid password: ", err)
+		return "", err
+	}
+	a.loggedIn = true
+	a.currentUser = &user
+	return user.Username, nil
+
+}
+
+func (a *App) Register(username, password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal("Failed to hash password: ", err)
+	}
+	user := models.User{
+		Username: username,
+		Password: string(hashedPassword),
+	}
+	if err := a.db.Create(&user).Error; err != nil {
+		return "", err
+	}
+	return "Registration successful", nil
+
+}
+
+func (a *App) GetCurrentUser() string {
+	if a.currentUser != nil {
+		return a.currentUser.Username
+	}
+	return ""
+}
+
+func (a *App) IsLoggedIn() bool {
+	return a.loggedIn
 }
 
 func (a *App) GetStock() ([]map[string]interface{}, error) {
