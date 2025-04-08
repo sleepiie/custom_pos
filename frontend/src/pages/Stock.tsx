@@ -2,8 +2,10 @@ import React , {useEffect , useState} from 'react';
 import {GetStock} from "../../wailsjs/go/main/App";
 
 interface StockItem {
-  id: number;
-  created_at: string;
+  Id: number;
+  Name: string;
+  Type: string;
+  Quantity: number;
 }
 
 const Stock: React.FC = () => {
@@ -37,14 +39,18 @@ const Stock: React.FC = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>create at</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Quantity</th>
           </tr>
         </thead>
         <tbody>
           {stockData.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.created_at}</td>
+            <tr key={item.Id}>
+              <td>{item.Id}</td>
+              <td>{item.Name}</td>
+              <td>{item.Type}</td>
+              <td>{item.Quantity}</td>
             </tr>
           ))}
         </tbody>

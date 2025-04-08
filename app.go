@@ -100,12 +100,12 @@ func (a *App) IsLoggedIn() bool {
 	return a.loggedIn
 }
 
-func (a *App) GetStock() ([]map[string]interface{}, error) {
-	var results []map[string]interface{}
-	err := a.db.Table("test").Find(&results).Error
+func (a *App) GetStock() ([]models.Stock, error) {
+	var stock []models.Stock
+	err := a.db.Where("user_id = ?", a.currentUser.Id).Find(&stock).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return results, nil
+	return stock, nil
 }
