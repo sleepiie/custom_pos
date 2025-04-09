@@ -36,7 +36,7 @@ func NewApp() *App {
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
 	}
-	err = db.AutoMigrate(&models.User{}, &models.Stock{}, &models.Deposite_Device{}, &models.Depositor{}, &models.Buy{}, &models.Sell{})
+	err = db.AutoMigrate(&models.User{}, &models.Stock{}, &models.Deposite_Device{}, &models.Depositor{}, &models.Buy{}, &models.Sell{}, &models.Type{})
 	if err != nil {
 		log.Fatal("Failed to migrate database: ", err)
 	}
@@ -111,4 +111,15 @@ func (a *App) GetStock() ([]models.Stock, error) {
 	}
 
 	return stock, nil
+}
+
+func (a *App) GetType() ([]models.Type, error) {
+	var types []models.Type
+	err := a.db.Where("types.user_id = ?", a.currentUser.Id).
+		Distinct("types.id , types.name").
+		Find(&types).Error
+	if err != nil {
+		return nil, err
+	}
+	return types, err
 }

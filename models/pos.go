@@ -61,6 +61,8 @@ type Sell struct {
 }
 
 type Type struct {
-	Id   uint `gorm:"primaryKey"`
-	Name string
+	Id     uint `gorm:"primaryKey"`
+	Name   string
+	UserId int
+	User   User `gorm:"foreignKey:UserId"`
 }

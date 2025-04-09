@@ -6,6 +6,8 @@ export function GetCurrentUser():Promise<string>;
 
 export function GetStock():Promise<Array<models.Stock>>;
 
+export function GetType():Promise<Array<models.Type>>;
+
 export function IsLoggedIn():Promise<boolean>;
 
 export function Login(arg1:string,arg2:string):Promise<string>;

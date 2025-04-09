@@ -10,6 +10,10 @@ export function GetStock() {
   return window['go']['main']['App']['GetStock']();
 }
 
+export function GetType() {
+  return window['go']['main']['App']['GetType']();
+}
+
 export function IsLoggedIn() {
   return window['go']['main']['App']['IsLoggedIn']();
 }
