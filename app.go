@@ -102,7 +102,10 @@ func (a *App) IsLoggedIn() bool {
 
 func (a *App) GetStock() ([]models.Stock, error) {
 	var stock []models.Stock
-	err := a.db.Where("user_id = ?", a.currentUser.Id).Find(&stock).Error
+	err := a.db.Where("user_id = ?", a.currentUser.Id).
+		Preload("Type").
+		Select("id, name, ime_i, type_id, quantity").
+		Find(&stock).Error
 	if err != nil {
 		return nil, err
 	}

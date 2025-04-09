@@ -16,12 +16,26 @@ export namespace models {
 	        this.Password = source["Password"];
 	    }
 	}
+	export class Type {
+	    Id: number;
+	    Name: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Type(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Id = source["Id"];
+	        this.Name = source["Name"];
+	    }
+	}
 	export class Stock {
 	    Id: number;
 	    Name: string;
 	    ImeI: string;
-	    Type: string;
-	    Barcode: string;
+	    TypeId: number;
+	    Type: Type;
 	    Quantity: number;
 	    UserID: number;
 	    User: User;
@@ -35,8 +49,8 @@ export namespace models {
 	        this.Id = source["Id"];
 	        this.Name = source["Name"];
 	        this.ImeI = source["ImeI"];
-	        this.Type = source["Type"];
-	        this.Barcode = source["Barcode"];
+	        this.TypeId = source["TypeId"];
+	        this.Type = this.convertValues(source["Type"], Type);
 	        this.Quantity = source["Quantity"];
 	        this.UserID = source["UserID"];
 	        this.User = this.convertValues(source["User"], User);
@@ -60,6 +74,7 @@ export namespace models {
 		    return a;
 		}
 	}
+	
 
 }
 

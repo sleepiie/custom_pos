@@ -24,10 +24,10 @@ type Stock struct {
 	Id       uint `gorm:"primaryKey"`
 	Name     string
 	ImeI     string `gorm:"unique"`
-	Type     string
-	Barcode  string `gorm:"unique"`
+	TypeId   int
+	Type     Type `gorm:"foreignKey:TypeId"`
 	Quantity int
-	UserID   uint `gorm:"foreignKey:UserID;references:Id"`
+	UserID   int
 	User     User `gorm:"foreignKey:UserID"`
 }
 
@@ -38,14 +38,14 @@ type Deposite_Device struct {
 	Deposit_Date time.Time
 	Due_Date     time.Time
 	Price        float64
-	DepositorID  uint      `gorm:"foreignKey:DepositorID;references:Id"`
+	DepositorID  int
 	Depositor    Depositor `gorm:"foreignKey:DepositorID"`
-	UserID       uint      `gorm:"foreignKey:UserID;references:Id"`
-	User         User      `gorm:"foreignKey:UserID"`
+	UserID       int
+	User         User `gorm:"foreignKey:UserID"`
 }
 
 type Buy struct {
-	StockID  uint  `gorm:"primaryKey;foreignKey:StockID;references:Id"`
+	StockID  uint  `gorm:"primaryKey"`
 	Stock    Stock `gorm:"foreignKey:StockID"`
 	Price    float64
 	Date     time.Time
@@ -53,9 +53,14 @@ type Buy struct {
 }
 
 type Sell struct {
-	StockID  uint  `gorm:"primaryKey;foreignKey:StockID;references:Id"`
+	StockID  uint  `gorm:"primaryKey"`
 	Stock    Stock `gorm:"foreignKey:StockID"`
 	Price    float64
 	Date     time.Time
 	Quantity int
+}
+
+type Type struct {
+	Id   uint `gorm:"primaryKey"`
+	Name string
 }
