@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GetType } from "../../wailsjs/go/main/App";
-import { Space, Table, Tag } from "antd";
+import { Space, Table, Tag, Button, Flex } from "antd";
 import type { TableProps } from "antd";
 
 interface Type {
@@ -31,7 +31,6 @@ const Type: React.FC = () => {
   useEffect(() => {
     const fetchType = async () => {
       try {
-        // เรียก method GetStock จาก backend
         const data = await GetType();
         settypedata(data as Type[]);
         setLoading(false);
@@ -49,12 +48,16 @@ const Type: React.FC = () => {
 
   return (
     <div>
-      <h2>Stock</h2>
+      <h2>Category</h2>
+      <Button type="primary" style={{ padding: "10px" }}>
+        Add Category
+      </Button>
       <Table
         columns={columns}
         dataSource={typedata}
         loading={loading}
         pagination={{ pageSize: 20 }}
+        style={{ marginTop: 15 }}
       />
     </div>
   );
