@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
   TeamOutlined,
   UserOutlined,
+  LogoutOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Dropdown, Breadcrumb, Layout, Menu, theme, Space } from "antd";
 import { HashRouter, Routes, Route, NavLink } from "react-router-dom";
 
 import Stock from "./pages/Stock";
@@ -16,7 +18,7 @@ import Sell from "./pages/Sell";
 import Analysis from "./pages/Analysis";
 import LoginPage from "./pages/Login";
 
-import { ResizeWindow } from "../wailsjs/go/main/App";
+import { ResizeWindow, GetCurrentUser } from "../wailsjs/go/main/App";
 
 const { Header, Content, Footer, Sider } = Layout;
 type MenuItem = Required<MenuProps>["items"][number];
@@ -41,6 +43,23 @@ const App: React.FC = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const [loggedIn, setLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    if (loggedIn) {
+      GetCurrentUser()
+        .then((name) => setUsername(name))
+        .catch((err) => console.error(err));
+    }
+  }, [loggedIn]);
+
+  const dropdown_items: MenuItem[] = [
+    getItem(
+      <NavLink to="/#">ออกจากระบบ</NavLink>,
+      "logout",
+      <LogoutOutlined />,
+    ),
+  ];
 
   const items: MenuItem[] = [
     getItem(<NavLink to="/sell">ขาย</NavLink>, "1", <PieChartOutlined />),
@@ -93,15 +112,34 @@ const App: React.FC = () => {
           >
             POS
           </div>
-          <div>
-            <UserOutlined
-              style={{
-                color: "white",
-                fontSize: "20px",
-                cursor: "pointer",
-              }}
-            />
-          </div>
+          <Space direction="vertical">
+            <Space wrap>
+              <Dropdown
+                menu={{
+                  items: dropdown_items,
+                }}
+                trigger={["click"]}
+                arrow
+              >
+                <a onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <span style={{ color: "white", marginRight: "8px" }}>
+                        {username}
+                      </span>
+                      <UserOutlined
+                        style={{
+                          color: "white",
+                          fontSize: "20px",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </div>
+                  </Space>
+                </a>
+              </Dropdown>
+            </Space>
+          </Space>
         </Header>
         <Layout>
           <Sider
