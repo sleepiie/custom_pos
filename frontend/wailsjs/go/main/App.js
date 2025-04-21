@@ -6,6 +6,10 @@ export function AddType(arg1) {
   return window['go']['main']['App']['AddType'](arg1);
 }
 
+export function DeleteCategory(arg1) {
+  return window['go']['main']['App']['DeleteCategory'](arg1);
+}
+
 export function GetCurrentUser() {
   return window['go']['main']['App']['GetCurrentUser']();
 }

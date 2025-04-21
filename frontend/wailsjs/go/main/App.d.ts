@@ -4,6 +4,8 @@ import {models} from '../models';
 
 export function AddType(arg1:string):Promise<void>;
 
+export function DeleteCategory(arg1:number):Promise<void>;
+
 export function GetCurrentUser():Promise<string>;
 
 export function GetStock():Promise<Array<models.Stock>>;
