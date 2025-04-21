@@ -7,13 +7,13 @@ import (
 )
 
 type User struct {
-	Id       uint   `gorm:"primaryKey"`
+	Id       uint   `gorm:"primaryKey;autoIncrement"`
 	Username string `gorm:"unique"`
 	Password string
 }
 
 type Depositor struct {
-	Id      uint `gorm:"primaryKey"`
+	Id      uint `gorm:"primaryKey;autoIncrement"`
 	Name    string
 	Card_id string `gorm:"unique"`
 	Address string
@@ -21,26 +21,26 @@ type Depositor struct {
 }
 
 type Stock struct {
-	Id       uint `gorm:"primaryKey"`
+	Id       uint `gorm:"primaryKey;autoIncrement"`
 	Name     string
 	ImeI     string `gorm:"unique"`
-	TypeId   int
+	TypeId   uint
 	Type     Type `gorm:"foreignKey:TypeId"`
-	Quantity int
-	UserID   int
+	Quantity uint
+	UserID   uint
 	User     User `gorm:"foreignKey:UserID"`
 }
 
 type Deposite_Device struct {
-	Id           uint `gorm:"primaryKey"`
+	Id           uint `gorm:"primaryKey;autoIncrement"`
 	Name         string
 	IMEI         string `gorm:"unique"`
 	Deposit_Date time.Time
 	Due_Date     time.Time
 	Price        float64
-	DepositorID  int
+	DepositorID  uint
 	Depositor    Depositor `gorm:"foreignKey:DepositorID"`
-	UserID       int
+	UserID       uint
 	User         User `gorm:"foreignKey:UserID"`
 }
 
@@ -49,7 +49,7 @@ type Buy struct {
 	Stock    Stock `gorm:"foreignKey:StockID"`
 	Price    float64
 	Date     time.Time
-	Quantity int
+	Quantity uint
 }
 
 type Sell struct {
@@ -57,12 +57,12 @@ type Sell struct {
 	Stock    Stock `gorm:"foreignKey:StockID"`
 	Price    float64
 	Date     time.Time
-	Quantity int
+	Quantity uint
 }
 
 type Type struct {
-	Id     uint `gorm:"primaryKey"`
-	Name   string
-	UserId int
+	Id     uint   `gorm:"primaryKey;autoIncrement"`
+	Name   string `gorm:"unique"`
+	UserId uint
 	User   User `gorm:"foreignKey:UserId"`
 }

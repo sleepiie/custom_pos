@@ -17,6 +17,7 @@ import Type from "./pages/Type";
 import Sell from "./pages/Sell";
 import Analysis from "./pages/Analysis";
 import LoginPage from "./pages/Login";
+import Buy from "./pages/Buy";
 
 import { ResizeWindow, GetCurrentUser } from "../wailsjs/go/main/App";
 
@@ -38,7 +39,7 @@ function getItem(
 }
 
 const App: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -183,6 +184,7 @@ const App: React.FC = () => {
                   <Route path="/category" element={<Type />} />
                   <Route path="/analysis" element={<Analysis />} />
                   <Route path="/" element={<Sell />} />
+                  <Route path="/buy" element={<Buy />} />
                 </Routes>
               </div>
             </Content>

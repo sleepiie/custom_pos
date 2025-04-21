@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"custom_pos/models"
 
@@ -122,4 +124,20 @@ func (a *App) GetType() ([]models.Type, error) {
 		return nil, err
 	}
 	return types, err
+}
+func (a *App) AddType(name string) error {
+	type_ := models.Type{
+		Name:   name,
+		UserId: a.currentUser.Id,
+	}
+	if err := a.db.Create(&type_).Error; err != nil {
+		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
+			return fmt.Errorf("category with name '%s' already exists", name)
+		}
+		if strings.Contains(err.Error(), "foreign key constraint") {
+			return fmt.Errorf("invalid user ID: %d", a.currentUser.Id)
+		}
+		return fmt.Errorf("failed to create category: %w", err)
+	}
+	return nil
 }
