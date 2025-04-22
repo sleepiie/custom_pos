@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"custom_pos/models"
 
@@ -140,4 +141,27 @@ func (a *App) AddType(name string) error {
 		return fmt.Errorf("failed to create category: %w", err)
 	}
 	return nil
+}
+
+func (a *App) AddStock(name, imei string, typeId, quantity uint, price float64) (string, error) {
+	stock := models.Stock{
+		Name:     name,
+		ImeI:     imei,
+		TypeId:   typeId,
+		Quantity: quantity,
+		UserID:   a.currentUser.Id,
+	}
+	if err := a.db.Create(&stock).Error; err != nil {
+		return "", err
+	}
+	buy := models.Buy{
+		StockID:  stock.Id,
+		Price:    price,
+		Date:     time.Now(),
+		Quantity: quantity,
+	}
+	if err := a.db.Create(&buy).Error; err != nil {
+		return "", err
+	}
+	return "stock added successfully", nil
 }
