@@ -6,6 +6,8 @@ export function AddStock(arg1:string,arg2:string,arg3:number,arg4:number,arg5:nu
 
 export function AddType(arg1:string):Promise<void>;
 
+export function DeleteCategory(arg1:number):Promise<void>;
+
 export function GetCurrentUser():Promise<string>;
 
 export function GetStock():Promise<Array<models.Stock>>;

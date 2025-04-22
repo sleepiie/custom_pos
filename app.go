@@ -142,6 +142,12 @@ func (a *App) AddType(name string) error {
 	}
 	return nil
 }
+func (a *App) DeleteCategory(id int) error {
+	if err := a.db.Where("id = ?", id).Delete(&models.Type{}).Error; err != nil {
+		return fmt.Errorf("failed to delete category: %w", err)
+	}
+	return nil
+}
 
 func (a *App) AddStock(name, imei string, typeId, quantity uint, price float64) (string, error) {
 	stock := models.Stock{

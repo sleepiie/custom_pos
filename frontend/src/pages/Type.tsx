@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GetType, AddType } from "../../wailsjs/go/main/App";
+import { GetType, AddType, DeleteCategory } from "../../wailsjs/go/main/App";
 import { Space, Table, Tag, Button, Flex, Modal, Alert, Input } from "antd";
 import type { TableProps } from "antd";
 
@@ -30,6 +30,15 @@ const Type: React.FC = () => {
       title: "Type",
       dataIndex: "Name",
       key: "Name",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button type="primary" danger onClick={() => handleDelete(record.Id)}>
+          Delete
+        </Button>
+      ),
     },
   ];
 
@@ -78,13 +87,32 @@ const Type: React.FC = () => {
     setModalError(null);
   };
 
+  const handleDelete = async (id: number) => {
+    try {
+      Modal.confirm({
+        title: "Are you sure you want to delete this category?",
+        content: "This action cannot be undone.",
+        onOk: async () => {
+          try {
+            await DeleteCategory(id);
+            await fetchType();
+          } catch (err) {
+            setError("Failed to delete category");
+          }
+        },
+      });
+    } catch (err) {
+      setError("Failed to delete category");
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
       <h2>Category</h2>
-      <Button type="primary" style={{ padding: "10px" }} onClick={showModal}>
+      <Button type="primary" style={{ padding: "13px" }} onClick={showModal}>
         Add Category
       </Button>
       <Table
