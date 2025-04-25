@@ -7,13 +7,6 @@ interface Type {
   Id: number;
   Name: string;
 }
-interface StockItem {
-  Id: number;
-  Name: string;
-  Quantity: number;
-  Type: Type;
-  ImeI: string;
-}
 
 const Type: React.FC = () => {
   const [typedata, settypedata] = useState<Type[]>([]);

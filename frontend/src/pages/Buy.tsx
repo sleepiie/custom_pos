@@ -12,7 +12,8 @@ interface StockForm {
   imei: string;
   typeId: number;
   quantity: number;
-  price: number;
+  pricebuy: number;
+  pricesell: number;
 }
 
 const Buy: React.FC = () => {
@@ -42,7 +43,8 @@ const Buy: React.FC = () => {
         values.imei,
         values.typeId,
         values.quantity,
-        values.price,
+        values.pricebuy,
+        values.pricesell,
       );
       Modal.success({
         title: "Success",
@@ -123,8 +125,24 @@ const Buy: React.FC = () => {
           <Input type="number" placeholder="กรอกจำนวน" min={1} />
         </Form.Item>
         <Form.Item
-          label="ราคา"
-          name="price"
+          label="ราคาซื้อ"
+          name="pricebuy"
+          rules={[
+            { required: true, message: "กรุณากรอกราคา" },
+            {
+              validator: (_, value) =>
+                value >= 0
+                  ? Promise.resolve()
+                  : Promise.reject(new Error("ราคาต้องไม่เป็นลบ")),
+            },
+          ]}
+          normalize={(value) => (value ? parseFloat(value) : value)}
+        >
+          <Input type="number" step="0.01" placeholder="กรอกราคา" min={0} />
+        </Form.Item>
+        <Form.Item
+          label="ราคาขาย"
+          name="pricesell"
           rules={[
             { required: true, message: "กรุณากรอกราคา" },
             {

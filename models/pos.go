@@ -25,10 +25,10 @@ type Stock struct {
 	Name     string
 	ImeI     string `gorm:"unique"`
 	TypeId   uint
-	Type     Type `gorm:"foreignKey:TypeId"`
+	Type     Type `gorm:"foreignKey:TypeId;constraint:OnDelete:CASCADE"`
 	Quantity uint
 	UserID   uint
-	User     User `gorm:"foreignKey:UserID"`
+	User     User `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }
 
 type Deposite_Device struct {
@@ -39,14 +39,14 @@ type Deposite_Device struct {
 	Due_Date     time.Time
 	Price        float64
 	DepositorID  uint
-	Depositor    Depositor `gorm:"foreignKey:DepositorID"`
+	Depositor    Depositor `gorm:"foreignKey:DepositorID;constraint:OnDelete:CASCADE"`
 	UserID       uint
-	User         User `gorm:"foreignKey:UserID"`
+	User         User `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }
 
 type Buy struct {
 	StockID  uint  `gorm:"primaryKey"`
-	Stock    Stock `gorm:"foreignKey:StockID"`
+	Stock    Stock `gorm:"foreignKey:StockID;constraint:OnDelete:CASCADE"`
 	Price    float64
 	Date     time.Time
 	Quantity uint
@@ -54,7 +54,7 @@ type Buy struct {
 
 type Sell struct {
 	StockID  uint  `gorm:"primaryKey"`
-	Stock    Stock `gorm:"foreignKey:StockID"`
+	Stock    Stock `gorm:"foreignKey:StockID;constraint:OnDelete:CASCADE"`
 	Price    float64
 	Date     time.Time
 	Quantity uint
@@ -64,5 +64,5 @@ type Type struct {
 	Id     uint   `gorm:"primaryKey;autoIncrement"`
 	Name   string `gorm:"unique"`
 	UserId uint
-	User   User `gorm:"foreignKey:UserId"`
+	User   User `gorm:"foreignKey:UserId;constraint:OnDelete:CASCADE"`
 }

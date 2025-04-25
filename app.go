@@ -149,7 +149,7 @@ func (a *App) DeleteCategory(id int) error {
 	return nil
 }
 
-func (a *App) AddStock(name, imei string, typeId, quantity uint, price float64) (string, error) {
+func (a *App) AddStock(name, imei string, typeId, quantity uint, pricebuy float64, pricesell float64) (string, error) {
 	stock := models.Stock{
 		Name:     name,
 		ImeI:     imei,
@@ -162,12 +162,55 @@ func (a *App) AddStock(name, imei string, typeId, quantity uint, price float64) 
 	}
 	buy := models.Buy{
 		StockID:  stock.Id,
-		Price:    price,
+		Price:    pricebuy,
 		Date:     time.Now(),
 		Quantity: quantity,
 	}
 	if err := a.db.Create(&buy).Error; err != nil {
 		return "", err
 	}
+	sell := models.Sell{
+		StockID: stock.Id,
+		Price:   pricesell,
+	}
+	if err := a.db.Create(&sell).Error; err != nil {
+		return "", err
+	}
 	return "stock added successfully", nil
+}
+
+func (a *App) DeleteStock(id int) error {
+	if err := a.db.Where("id = ?", id).Delete(&models.Stock{}).Error; err != nil {
+		return fmt.Errorf("failed to delete Stock: %w", err)
+	}
+	return nil
+}
+
+func (a *App) GetRecentBuy(limit int) ([]models.Buy, error) {
+	var buys []models.Buy
+	err := a.db.
+		Preload("Stock").
+		Select("buys.stock_id , buys.price ,  buys.date , buys.quantity").
+		Order("buys.date DESC").
+		Limit(limit).
+		Find(&buys).Error
+	if err != nil {
+		return nil, err
+	}
+	return buys, nil
+}
+
+func (a *App) GetRecentSell(limit int) ([]models.Sell, error) {
+	var sells []models.Sell
+	err := a.db.
+		Where("quantity > ?", 0).
+		Preload("Stock").
+		Select("sells.stock_id , sells.price ,  sells.date , sells.quantity").
+		Order("sells.date DESC").
+		Limit(limit).
+		Find(&sells).Error
+	if err != nil {
+		return nil, err
+	}
+	return sells, nil
 }
